@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        /* Import Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Roboto:wght@300;400&display=swap');
+
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #020a18; /* A dark navy blue background as a fallback */
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden; /* Prevents scrollbars from the full-height container */
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            /* Background image from Unsplash for a cool visual effect */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Courier Prime', monospace;
+            font-weight: 700;
+            font-size: 50px;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .countdown-display {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px; /* Space between time unit blocks */
+            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+        }
+
+        .countdown-display div {
+            flex-basis: 120px; /* Base width for each time unit block */
+            text-align: center;
+        }
+        
+        /* The large numbers for the countdown */
+        .countdown-display p {
+            font-size: 72px;
+            font-weight: bold;
+            font-family: 'Courier Prime', monospace;
+            line-height: 1;
+            /* A cool gradient effect for the text */
+            background: -webkit-linear-gradient(#eee, #33aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        
+        /* The labels below the numbers (Days, Hours, etc.) */
+        .countdown-display span {
+            font-size: 16px;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        /* Final message styling */
+        #final-message h2 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 40px;
+            color: #33aaff;
+            text-transform: uppercase;
+        }
+
+
+        /* Responsive Design for smaller screens */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+                margin-bottom: 40px;
+            }
+            .countdown-display {
+                gap: 20px;
+            }
+            .countdown-display p {
+                font-size: 50px;
+            }
+            .countdown-display span {
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 28px;
+            }
+            .countdown-display p {
+                font-size: 36px;
+            }
+            .countdown-display span {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>WHAT AM I GOOD AT ?</h1>
+        <div class="countdown-display" id="countdown">
+            <div>
+                <p id="days">00</p>
+                <span>Days</span>
+            </div>
+            <div>
+                <p id="hours">00</p>
+                <span>Hours</span>
+            </div>
+            <div>
+                <p id="minutes">00</p>
+                <span>Minutes</span>
+            </div>
+            <div>
+                <p id="seconds">00</p>
+                <span>Seconds</span>
+            </div>
+        </div>
+        <div id="final-message" class="countdown-display"></div>
+    </div>
+
+    <script>
+        // Set the date we're counting down to
+        const countDownDate = new Date("Dec 19, 2025 00:00:00").getTime();
+
+        // Get the elements to display the countdown values
+        const daysEl = document.getElementById("days");
+        const hoursEl = document.getElementById("hours");
+        const minutesEl = document.getElementById("minutes");
+        const secondsEl = document.getElementById("seconds");
+        const countdownEl = document.getElementById("countdown");
+        const finalMessageEl = document.getElementById("final-message");
+
+        // Update the count down every 1 second
+        const timer = setInterval(function() {
+
+            // Get today's date and time (in milliseconds)
+            const now = new Date().getTime();
+
+            // Find the time remaining between now and the count down date
+            const distance = countDownDate - now;
+
+            // --- Time calculations for days, hours, minutes and seconds ---
+            // 1000ms * 60s * 60m * 24h = number of milliseconds in a day
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Helper function to add a leading zero if the number is less than 10
+            function formatTime(time) {
+                return time < 10 ? `0${time}` : time;
+            }
+
+            // If the count down is still going
+            if (distance > 0) {
+                // Display the results in their respective elements
+                daysEl.innerHTML = formatTime(days);
+                hoursEl.innerHTML = formatTime(hours);
+                minutesEl.innerHTML = formatTime(minutes);
+                secondsEl.innerHTML = formatTime(seconds);
+            }
+            // If the count down is finished
+            else {
+                clearInterval(timer);
+                countdownEl.style.display = 'none'; // Hide the numbers
+                finalMessageEl.innerHTML = "<h2>The Time Has Come!</h2>"; // Display final message
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
